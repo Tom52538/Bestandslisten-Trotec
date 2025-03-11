@@ -1,22 +1,19 @@
-{
-  "name": "bestandsmengen-api",
+app.listen(port, () => {
+    console.log(`Server läuft auf Port ${port}`);
+});
+
+// package.json
+const packageJson = {
+  "name": "bestandslisten-trotec",
   "version": "1.0.0",
-  "description": "Eine Node.js API für die Bestandsmengenerfassung mit PostgreSQL",
+  "description": "API für Bestandslisten",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.10.0",
-    "dotenv": "^16.0.3"
-  },
-  "engines": {
-    "node": "18.x"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dein-benutzername/bestandsmengen-api.git"
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "dotenv": "^10.0.0"
   }
-}
+};
