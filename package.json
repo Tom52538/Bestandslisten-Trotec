@@ -1,4 +1,4 @@
-const packageJson = {
+{
   "name": "bestandslisten-trotec",
   "version": "1.0.0",
   "description": "API für Bestandslisten",
@@ -11,4 +11,4 @@ const packageJson = {
     "pg": "^8.7.1",
     "dotenv": "^10.0.0"
   }
-};
+}
