@@ -26,27 +26,19 @@ app.get("/bestandsmengen", async (req, res) => {
     const result = await pool.query("SELECT * FROM bestandsmengen");
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error("Fehler beim Abrufen der Bestandsmengen:", err);
     res.status(500).send("Fehler beim Abrufen der Daten");
   }
 });
 
-// Neuen Bestand hinzufügen
-app.post("/bestandsmengen", async (req, res) => {
-  const { kategorie, artikelnummer, bezeichnung, bestand, datum } = req.body;
-  try {
-    const result = await pool.query(
-      "INSERT INTO bestandsmengen (kategorie, artikelnummer, bezeichnung, bestand, datum) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [kategorie, artikelnummer, bezeichnung, bestand, datum]
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Fehler beim Hinzufügen der Daten");
-  }
+// Server starten mit Fehlerbehandlung
+const server = app.listen(port, () => {
+  console.log(`Server läuft auf Port ${port}`);
 });
 
-// Server starten
-app.listen(port, () => {
-  console.log(`Server läuft auf Port ${port}`);
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${port} ist bereits belegt. Beende alten Prozess...`);
+    process.exit(1);
+  }
 });
