@@ -10,18 +10,18 @@ app.use(bodyParser.json());
 // Statische Dateien aus dem "build"-Ordner ausliefern
 app.use(express.static(path.join(__dirname, 'build')));
 
-// Verbindung zu PostgreSQL herstellen
-// Es wird angenommen, dass process.env.DATABASE_URL gesetzt ist, z. B. so:
+// PostgreSQL-Verbindung herstellen
+// Stelle sicher, dass die Umgebungsvariable DATABASE_URL gesetzt ist, z.B.:
 // postgresql://postgres:HgXaPRiBvgGpAmecdvRCFeNJBJtSXVKk@yamanote.proxy.rlwy.net:17621/railway
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Viele Cloud-Anbieter (und Railway) benötigen SSL:
+  // Viele Cloud-Anbieter (inklusive Railway) erfordern SSL:
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-// Testen der DB-Verbindung
+// Testen der PostgreSQL-Verbindung
 pool.connect((err, client, release) => {
   if (err) {
     console.error('Error connecting to PostgreSQL:', err.stack);
@@ -31,11 +31,14 @@ pool.connect((err, client, release) => {
   }
 });
 
-// Beispiel-API-Endpunkt: Gibt die aktuelle Zeit aus der DB zurück
+// Beispiel-API-Endpunkt: Gibt die aktuelle Zeit aus der Datenbank zurück
 app.get('/api/example', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW() AS current_time');
-    res.json({ message: 'This is an example endpoint', current_time: result.rows[0].current_time });
+    res.json({
+      message: 'This is an example endpoint',
+      current_time: result.rows[0].current_time
+    });
   } catch (error) {
     console.error('Database query error:', error);
     res.status(500).send('Database error');
