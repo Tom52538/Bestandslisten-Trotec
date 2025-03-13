@@ -4,47 +4,42 @@ const { Client } = require('pg');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 
-// Lade Umgebungsvariablen aus der .env Datei
-require('dotenv').config();
+// Umgebungsvariablen laden
+dotenv.config();
 
-// Erstelle eine Express-App
-const app = require('express')();
+// Express App erstellen
+const app = express();
 
 // Middleware
-app.use(require('body-parser').json());
+app.use(bodyParser.json());
 
-// Verbindung zur PostgreSQL-Datenbank herstellen
-const client = new (require('pg').Client)({
+// PostgreSQL-Client erstellen
+const client = new Client({
   connectionString: process.env.DATABASE_URL,
 });
 
+// PostgreSQL verbinden
 client.connect()
   .then(() => console.log('Verbunden mit PostgreSQL ✅'))
   .catch(err => console.error('Fehler bei Verbindung zu PostgreSQL:', err));
 
-// Testroute
+// Testroute für Server
 app.get('/', (req, res) => {
-  res.send('API funktioniert! 🚀');
+  res.send('API läuft 🚀');
 });
 
-// Beispiel-Route, um Datenbankverbindung zu testen
+// Testroute für PostgreSQL
 app.get('/test-db', async (req, res) => {
   try {
     const result = await client.query('SELECT NOW()');
-    res.json({ connected: true, time: result.rows[0] });
+    res.json({ success: true, time: result.rows[0] });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // Server starten
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server gestartet auf Port ${port}`);
-
-  // Datenbankverbindung initialisieren
-  client
-    .connect()
-    .then(() => console.log('Erfolgreich mit PostgreSQL verbunden!'))
-    .catch((err) => console.error('Fehler beim Verbinden mit PostgreSQL:', err));
 });
